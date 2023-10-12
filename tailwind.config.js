@@ -1,4 +1,5 @@
 const colors = require('tailwindcss/colors');
+const defaultTheme = require('tailwindcss/defaultTheme');
 
 /** @type {import('tailwindcss').Config} */
 export default {
@@ -9,9 +10,14 @@ export default {
   theme: {
     extend: {
       colors: {
-        primary: colors.emerald,
-      }
+        primary: colors.amber,
+      },
+      fontFamily: {
+        sans: ['Inter var', ...defaultTheme.fontFamily.sans],
+      },
     },
   },
-  plugins: [],
+  plugins: [
+    require('@tailwindcss/forms'),
+  ],
 }

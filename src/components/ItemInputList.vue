@@ -99,6 +99,8 @@ const itemInputMounted = (key: number, inputField: HTMLInputElement | null) => {
 const itemEnterPressed = (key: number) => {
     chooseRandomItem();
 }
+
+addItems();
 </script>
 
 <template>

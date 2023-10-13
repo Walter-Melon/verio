@@ -95,6 +95,10 @@ const itemInputMounted = (key: number, inputField: HTMLInputElement | null) => {
   }
 }
 
+const itemEnterPressed = (key: number) => {
+  chooseRandomItem();
+}
+
 const testChooseItem = (times: number) => {
   items.value.forEach((item, key) => item.count = 0);
 
@@ -102,6 +106,7 @@ const testChooseItem = (times: number) => {
     chooseRandomItem();
   }
 };
+
 </script>
 
 <template>
@@ -134,7 +139,7 @@ const testChooseItem = (times: number) => {
       <ul class="flex flex-col gap-1">
         <ItemInputGroup v-for="[key, item] in items" :key="key" :index="key" :total-items="items.size"
           :total-weight="totalWeight" :choosen-key="choosenKey" :item="item" @remove="removeItem"
-          @mounted="itemInputMounted" />
+          @mounted="itemInputMounted" @enter-pressed="itemEnterPressed" />
       </ul>
       <button type="button"
         class="flex w-full items-center justify-center gap-x-1.5 rounded-md p-2 text-sm font-semibold bg-gray-900 text-primary-600 ring-1 ring-inset ring-gray-800 hover:bg-gray-700"

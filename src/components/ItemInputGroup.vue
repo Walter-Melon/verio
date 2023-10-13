@@ -49,7 +49,7 @@ onMounted(() => {
     index == choosenKey ? 'border-primary-600' : 'border-gray-800',
     'flex items-center justify-between bg-gray-900 border rounded-md gap-x-6 gap-y-4 px-2 py-5'
   ]">
-    <div class="flex flex-wrap items-center gap-x-4 sm:flex-nowrap">
+    <div class="flex flex-wrap items-center gap-x-4 lg:flex-nowrap">
       <div>
         <label :for="`item_${index}`" class="sr-only"> Item {{ index }} </label>
         <div class="flex rounded-md shadow-sm">
@@ -62,7 +62,7 @@ onMounted(() => {
             @keydown.enter="$emit('enterPressed', index)" />
         </div>
       </div>
-      <div class="mt-1 flex items-center gap-x-2 sm:mt-0">
+      <div class="mt-1 flex items-center gap-x-2 lg:mt-0">
         <div
           class="inline-flex items-baseline bg-gray-400/10 text-gray-400 rounded-full px-2.5 py-0.5 text-sm font-medium">
           <TrophyIcon class="-ml-1 mr-0.5 h-5 w-5 flex-shrink-0 self-center text-gray-500" aria-hidden="true" />

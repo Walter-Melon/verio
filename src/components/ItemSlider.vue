@@ -9,6 +9,7 @@ const props = defineProps<{
 
 const slideDelay = 1.5;
 const slideDuration = 5;
+const testIndex = ref(0);
 const slideItemsRef = ref<HTMLElement[]>();
 const timer = gsap.delayedCall(slideDelay, autoPlay).pause();
 const wrapProgress = gsap.utils.wrap(0, 1);
@@ -58,19 +59,22 @@ function animateSlides() {
         return;
     }
 
-    const numSlides = slides.length;
-    const progress = animation.progress() + numSlides;
+    let index = testIndex.value / slides.length;
+    index *= -1;
+    index += 1;
+
     timer.pause();
     animation.pause();
     gsap.to(animation, {
         duration: slideDuration,
-        progress: gsap.utils.snap(1 / numSlides, progress),
+        progress: index,
         overwrite: true,
         modifiers: {
             progress: wrapProgress // value => (value < 0 || value === 1 ? 1 : 0) + (value % 1)
         },
         onComplete: () => {
             console.log('Complete');
+            timer.restart(true);
         }
     });
 }
@@ -96,6 +100,7 @@ onMounted(() => {
                 {{ key }}
             </li>
         </ul>
-        <button @click="animateSlides">Stop Slides</button>
     </div>
+    <input type="number" class="bg-gray-800" v-model="testIndex">
+    <button @click="animateSlides">Stop Slides</button>
 </template>

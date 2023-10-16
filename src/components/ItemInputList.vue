@@ -13,7 +13,7 @@ const { items, totalWeight } = defineProps<{
 const nextItemKey = ref(1);
 const choosenKey = ref<number>();
 const choosenItem = ref<Item>();
-const startCount = ref(3);
+const startCount = ref(5);
 const focusKey = ref<number>(0);
 
 const addItem = ({ text, setFocus = false }: { text?: string, setFocus?: boolean } = {}): number => {

@@ -45,10 +45,7 @@ onMounted(() => {
 });
 </script>
 <template>
-  <li :class="[
-    index == choosenKey ? 'border-primary-600' : 'border-gray-800',
-    'flex items-center justify-between bg-gray-900 border rounded-md gap-x-6 gap-y-4 px-2 py-5'
-  ]">
+  <li class="flex items-center justify-between bg-gray-900 border rounded-md gap-x-6 gap-y-4 px-2 py-5">
     <div class="flex flex-wrap items-center gap-x-4 lg:flex-nowrap">
       <div>
         <label :for="`item_${index}`" class="sr-only"> Item {{ index }} </label>

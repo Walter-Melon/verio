@@ -5,11 +5,18 @@ import gsap from 'gsap';
 import ItemInputList from './components/ItemInputList.vue';
 
 const items = ref<Map<number, Item>>(new Map());
-
 const choosenKey = ref<number>();
 
-const tweened = reactive({
-  turn: 0
+const cyles = 20;
+const tween = ref<GSAPTween>();
+
+const deciding = reactive<{
+  active: boolean;
+  turn: number;
+  key?: number;
+}>({
+  active: false,
+  turn: 0,
 });
 
 const totalWeight = computed(() => {
@@ -17,16 +24,22 @@ const totalWeight = computed(() => {
 });
 
 // current turn gets wrapped around to an index
-const actIndex = computed(() => {
-  return parseInt((tweened.turn % items.value.size).toString());
+const currentIndex = computed(() => {
+  if (!deciding.active) {
+    return;
+  }
+
+  return Math.floor(deciding.turn % items.value.size);
 });
 
 // Total cyles + offset for index to get correct item
 const totalTurns = computed(() => {
-  return cyles * items.value.size + (choosenKey.value || 0 % items.value.size);
+  return cyles * items.value.size + (deciding.key || 0 % items.value.size);
 });
 
-const cyles = 20;
+const decideBtnText = computed(() => {
+  return (deciding.active) ? 'Skip' : 'Decide';
+});
 
 const getRandomItemKey = (): number | undefined => {
   let randomValue = Math.random() * totalWeight.value;
@@ -41,22 +54,35 @@ const getRandomItemKey = (): number | undefined => {
   return;
 };
 
-const startAnimation = () => {
-  const key = getRandomItemKey();
-  if (!key) {
+const decide = () => {
+  // Skip the animation
+  if (deciding.active) {
+    finishedDeciding();
     return;
   }
 
-  tweened.turn = 0;
+  choosenKey.value = undefined;
+  deciding.active = true;
+  deciding.turn = 0;
+  deciding.key = getRandomItemKey();
 
-  gsap.to(tweened, {
+  if (!deciding.key) {
+    return;
+  }
+
+  tween.value = gsap.to(deciding, {
     duration: 10,
     ease: 'power1.inOut',
-    turn: totalTurns.value,
-    onComplete: () => {
-      choosenKey.value = key;
-    }
+    turn: totalTurns.value, // This animates the deciding.turn value
+    onComplete: finishedDeciding
   });
+}
+
+const finishedDeciding = () => {
+  tween.value?.kill();
+
+  choosenKey.value = deciding.key;
+  deciding.active = false;
 }
 
 </script>
@@ -64,8 +90,9 @@ const startAnimation = () => {
 <template>
   <div class="flex flex-col gap-2 p-2">
     <ItemInputList class="w-full" :items="items" :total-weight="totalWeight" :choosen-key="choosenKey"
-      :active-index="actIndex" />
-    <button class="w-full h-full flex-1 bg-primary-500 rounded-md text-gray-800 font-bold p-2"
-      @click="startAnimation">Decide</button>
+      :current-index="currentIndex" @item-enter-pressed="decide" />
+    <button class="w-full h-full flex-1 bg-primary-500 rounded-md text-gray-800 font-bold p-2" @click="decide">
+      {{ decideBtnText }}
+    </button>
   </div>
 </template>

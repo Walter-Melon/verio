@@ -13,7 +13,6 @@ const props = defineProps<{
   item: Item;
   totalItems: number;
   totalWeight: number;
-  choosenKey?: number;
 }>();
 
 const emits = defineEmits<{

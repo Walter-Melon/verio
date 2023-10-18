@@ -5,30 +5,26 @@ import { PlusCircleIcon, TrashIcon } from '@heroicons/vue/20/solid';
 import ItemInputGroup from './ItemInputGroup.vue';
 
 
-const { items, totalWeight, choosenKey } = defineProps<{
+const props = defineProps<{
     items: Map<number, Item>;
     totalWeight: number;
     choosenKey?: number;
-    activeIndex?: number;
+    currentIndex?: number;
+}>();
+
+const emits = defineEmits<{
+    (e: 'itemEnterPressed', key: number): void;
 }>();
 
 const nextItemKey = ref(1);
 const startCount = ref(5);
 const focusKey = ref<number>(0);
 
-const choosenItem = computed(() => {
-    if (!choosenKey) {
-        return;
-    }
-
-    return getItem(choosenKey);
-});
-
 const addItem = ({ text, setFocus = false }: { text?: string, setFocus?: boolean } = {}): number => {
     const itemKey = nextItemKey.value;
     nextItemKey.value++;
 
-    items.set(itemKey, {
+    props.items.set(itemKey, {
         text: text ?? `Item ${itemKey}`,
         weight: 1,
         count: 0
@@ -42,7 +38,7 @@ const addItem = ({ text, setFocus = false }: { text?: string, setFocus?: boolean
 };
 
 const getItem = (key: number) => {
-    const item = items.get(key);
+    const item = props.items.get(key);
     if (!item) {
         throw new Error(`No item with key "${key}" found`);
     }
@@ -51,9 +47,9 @@ const getItem = (key: number) => {
 };
 
 const removeItem = (key: number) => {
-    items.delete(key);
+    props.items.delete(key);
 
-    if (items.size <= 0) {
+    if (props.items.size <= 0) {
         nextItemKey.value = 1;
     }
 };
@@ -67,7 +63,7 @@ const addItems = () => {
 };
 
 const removeItems = () => {
-    items.clear();
+    props.items.clear();
     nextItemKey.value = 1;
 };
 
@@ -79,17 +75,17 @@ const itemInputMounted = (key: number, inputField: HTMLInputElement | null) => {
 }
 
 const itemEnterPressed = (key: number) => {
-    // chooseRandomItem();
-    alert('TODO: Implement emit');
+    emits('itemEnterPressed', key);
 }
 
-watch(choosenItem, (item) => {
-    if (!item) {
+watch(() => props.choosenKey, (key, oldKey) => {
+    if (!key) {
         return;
     }
 
+    const item = getItem(key);
     item.count++;
-})
+});
 
 addItems();
 </script>
@@ -124,8 +120,8 @@ addItems();
             <div class="flex flex-col gap-2 ">
                 <ul class="flex flex-col gap-1">
                     <ItemInputGroup v-for="([key, item], i) in items" :key="key" :index="key" :total-items="items.size"
-                        :total-weight="totalWeight" :choosen-key="choosenKey" :item="item" :class="[
-                            i == activeIndex ? 'border-primary-600' : 'border-gray-800',
+                        :total-weight="totalWeight" :item="item" :class="[
+                            key == choosenKey || i == currentIndex ? 'border-primary-600' : 'border-gray-800',
                         ]" @remove="removeItem" @mounted="itemInputMounted" @enter-pressed="itemEnterPressed" />
                 </ul>
                 <button type="button"

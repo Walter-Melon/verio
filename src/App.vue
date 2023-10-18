@@ -88,11 +88,15 @@ const finishedDeciding = () => {
 </script>
 
 <template>
-  <div class="flex flex-col gap-2 p-2">
-    <ItemInputList class="w-full" :items="items" :total-weight="totalWeight" :choosen-key="choosenKey"
-      :current-index="currentIndex" @item-enter-pressed="decide" />
-    <button class="w-full h-full flex-1 bg-primary-500 rounded-md text-gray-800 font-bold p-2" @click="decide">
-      {{ decideBtnText }}
-    </button>
+  <div class="mx-auto max-w-7xl pb-0 p-2 sm:p-6 lg:p-8">
+    <div class="flex flex-col gap-2 mx-auto max-w-3xl">
+      <ItemInputList class="w-full" :items="items" :total-weight="totalWeight" :choosen-key="choosenKey"
+        :current-index="currentIndex" :deciding="deciding.active" @item-enter-pressed="decide" />
+      <div class="sticky py-2 bg-gray-950 bottom-0">
+        <button class="w-full bg-primary-500 rounded-md text-gray-800 font-bold p-2" @click="decide">
+          {{ decideBtnText }}
+        </button>
+      </div>
+    </div>
   </div>
 </template>

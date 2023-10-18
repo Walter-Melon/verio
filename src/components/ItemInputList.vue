@@ -125,7 +125,8 @@ addItems();
                 <ul class="flex flex-col gap-1">
                     <ItemInputGroup v-for="([key, item], i) in items" :key="key" :item-key="key" :disabled="deciding"
                         :total-items="items.size" :total-weight="totalWeight" :item="item" :class="[
-                            (key == choosenKey || i == currentIndex) ? 'border-primary-600' : 'border-gray-800',
+                            (i == currentIndex || key == choosenKey) ? 'border-primary-600' : 'border-gray-800',
+                            (key == choosenKey) ? 'bg-primary-600/30' : 'bg-gray-900',
                             (deciding) ? 'opacity-70' : '',
                         ]" @remove="removeItem" @mounted="itemInputMounted" @enter-pressed="itemEnterPressed" />
                 </ul>

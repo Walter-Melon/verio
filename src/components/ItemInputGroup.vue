@@ -25,7 +25,7 @@ const emits = defineEmits<{
 const itemTextRef = ref<HTMLInputElement | null>(null);
 
 const itemChance = computed(() => {
-  return parseFloat(((props.item.weight / props.totalWeight) * 100).toFixed(2));
+  return parseFloat(((props.item.weight / props.totalWeight) * 100).toFixed(0));
 });
 
 const itemHasGoodOdds = computed(() => {
@@ -40,19 +40,21 @@ const removeItem = () => {
   emits('remove', props.itemKey);
 };
 
+const zeroPad = (num: number, places = 2) => String(num).padStart(places, '0');
+
 onMounted(() => {
   emits('mounted', props.itemKey, itemTextRef.value);
 });
 </script>
 <template>
-  <li class="flex items-center justify-between bg-gray-900 border rounded-md gap-x-6 gap-y-4 px-2 py-5">
+  <li class="flex items-center justify-between border rounded-md gap-x-6 gap-y-4 px-2 py-5">
     <div class="flex flex-wrap items-center gap-x-4 lg:flex-nowrap">
       <div>
         <label :for="`item_${itemKey}`" class="sr-only"> Item {{ itemKey }} </label>
         <div class="flex rounded-md shadow-sm">
           <span
             class="inline-flex items-center rounded-l-md border border-r-0 bg-gray-700 border-gray-700 px-3 text-gray-400 sm:text-sm">
-            {{ itemKey }}
+            {{ zeroPad(itemKey) }}
           </span>
           <input ref="itemTextRef" type="text" v-model="item.text" :name="`item_${itemKey}`" :id="`item_${itemKey}`"
             :disabled="disabled" autofocus :class="[
@@ -62,22 +64,21 @@ onMounted(() => {
         </div>
       </div>
       <div class="mt-1 flex items-center gap-x-2 lg:mt-0">
-        <div
-          class="inline-flex items-baseline bg-gray-400/10 text-gray-400 rounded-full px-2.5 py-0.5 text-sm font-medium">
+        <div class="inline-flex items-baseline bg-gray-800 text-gray-400 rounded-full px-2.5 py-0.5 text-sm font-medium">
           <TrophyIcon class="-ml-1 mr-0.5 h-5 w-5 flex-shrink-0 self-center text-gray-500" aria-hidden="true" />
           <span class="sr-only"> Item {{ itemKey }} got choosen </span>
           {{ item.count }}
         </div>
         <div :class="[
-          itemHasGoodOdds ? 'bg-green-400/10 text-green-400' : 'bg-red-400/10 text-red-400',
-          'inline-flex items-baseline rounded-full px-2.5 py-0.5 text-sm font-medium'
+          itemHasGoodOdds ? ' text-green-400' : ' text-red-400',
+          'inline-flex items-baseline bg-gray-800 rounded-full px-2.5 py-0.5 text-sm font-medium'
         ]">
           <ArrowTrendingUpIcon v-if="itemHasGoodOdds"
             class="-ml-1 mr-0.5 h-5 w-5 flex-shrink-0 self-center text-green-500" aria-hidden="true" />
           <ArrowTrendingDownIcon v-else class="-ml-1 mr-0.5 h-5 w-5 flex-shrink-0 self-center text-red-500"
             aria-hidden="true" />
           <span class="sr-only"> Item {{ itemKey }} odds are </span>
-          {{ itemChance }}
+          {{ zeroPad(itemChance, 2) }}%
         </div>
         <div class="inline-flex items-baseline -space-x-0.5" title="Weight">
           <button v-for="i in 5" :key="i" :disabled="disabled" :class="[

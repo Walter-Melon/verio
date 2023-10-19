@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import type { Item } from '@/types';
-import { computed, ref, watch } from 'vue';
+import { ref, watch } from 'vue';
 import { PlusCircleIcon, TrashIcon } from '@heroicons/vue/20/solid';
 import ItemInputGroup from './ItemInputGroup.vue';
 
@@ -9,7 +9,7 @@ const props = defineProps<{
     items: Map<number, Item>;
     totalWeight: number;
     choosenKey?: number;
-    currentIndex?: number;
+    currentKey?: number;
     deciding?: boolean;
 }>();
 
@@ -18,7 +18,7 @@ const emits = defineEmits<{
 }>();
 
 const nextItemKey = ref(1);
-const startCount = ref(5);
+const startCount = ref(3);
 const focusKey = ref<number>(0);
 
 const addItem = ({ text, setFocus = false }: { text?: string, setFocus?: boolean } = {}): number => {
@@ -27,7 +27,7 @@ const addItem = ({ text, setFocus = false }: { text?: string, setFocus?: boolean
 
     props.items.set(itemKey, {
         text: text ?? `Item ${itemKey}`,
-        weight: 1,
+        weight: 3,
         count: 0
     });
 
@@ -123,10 +123,10 @@ addItems();
         <main>
             <div class="flex flex-col gap-2 ">
                 <ul class="flex flex-col gap-1">
-                    <ItemInputGroup v-for="([key, item], i) in items" :key="key" :item-key="key" :disabled="deciding"
+                    <ItemInputGroup v-for="[key, item] in items" :key="key" :item-key="key" :disabled="deciding"
                         :total-items="items.size" :total-weight="totalWeight" :item="item" :class="[
-                            (i == currentIndex || key == choosenKey) ? 'border-primary-600' : 'border-gray-800',
-                            (key == choosenKey) ? 'bg-primary-600/30' : 'bg-gray-900',
+                            (key == currentKey || key == choosenKey) ? 'border-primary-600' : 'border-gray-800',
+                            (key == choosenKey && !item.ignore) ? 'bg-primary-600/30' : 'bg-gray-900',
                             (deciding) ? 'opacity-70' : '',
                         ]" @remove="removeItem" @mounted="itemInputMounted" @enter-pressed="itemEnterPressed" />
                 </ul>

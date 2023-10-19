@@ -25,11 +25,11 @@ const emits = defineEmits<{
 const itemTextRef = ref<HTMLInputElement | null>(null);
 
 const itemChance = computed(() => {
-  return parseFloat(((props.item.weight / props.totalWeight) * 100).toFixed(0));
+  return (props.item.ignore) ? 0 : parseFloat(((props.item.weight / props.totalWeight) * 100).toFixed(0));
 });
 
 const itemHasGoodOdds = computed(() => {
-  return itemChance.value >= parseFloat(((1 / props.totalItems) * 100).toFixed(2));
+  return itemChance.value >= parseFloat(((1 / props.totalItems) * 100).toFixed(0));
 });
 
 const setItemWeight = (weight: number) => {
@@ -39,6 +39,10 @@ const setItemWeight = (weight: number) => {
 const removeItem = () => {
   emits('remove', props.itemKey);
 };
+
+const clickItemNumber = () => {
+  props.item.ignore = !props.item.ignore;
+}
 
 const zeroPad = (num: number, places = 2) => String(num).padStart(places, '0');
 
@@ -52,8 +56,10 @@ onMounted(() => {
       <div>
         <label :for="`item_${itemKey}`" class="sr-only"> Item {{ itemKey }} </label>
         <div class="flex rounded-md shadow-sm">
-          <span
-            class="inline-flex items-center rounded-l-md border border-r-0 bg-gray-700 border-gray-700 px-3 text-gray-400 sm:text-sm">
+          <span :class="[
+            (item.ignore) ? 'line-through' : '',
+            'inline-flex items-center rounded-l-md cursor-pointer border border-r-0 bg-gray-700 border-gray-700 px-3 text-gray-400 sm:text-sm'
+          ]" @click="clickItemNumber">
             {{ zeroPad(itemKey) }}
           </span>
           <input ref="itemTextRef" type="text" v-model="item.text" :name="`item_${itemKey}`" :id="`item_${itemKey}`"
@@ -78,7 +84,7 @@ onMounted(() => {
           <ArrowTrendingDownIcon v-else class="-ml-1 mr-0.5 h-5 w-5 flex-shrink-0 self-center text-red-500"
             aria-hidden="true" />
           <span class="sr-only"> Item {{ itemKey }} odds are </span>
-          {{ zeroPad(itemChance, 2) }}%
+          {{ zeroPad(itemChance) }}%
         </div>
         <div class="inline-flex items-baseline -space-x-0.5" title="Weight">
           <button v-for="i in 5" :key="i" :disabled="disabled" :class="[

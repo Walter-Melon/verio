@@ -57,7 +57,7 @@ const getRandomItemKey = (): number | undefined => {
   return;
 };
 
-const decide = (skipAnimation = false) => {
+const decide = () => {
   // Skip the animation
   if (deciding.active) {
     finishedDeciding();
@@ -67,11 +67,6 @@ const decide = (skipAnimation = false) => {
   startDeciding();
 
   if (!deciding.key) {
-    return;
-  }
-
-  if (skipAnimation) {
-    finishedDeciding();
     return;
   }
 
@@ -119,6 +114,10 @@ const excludeDecide = () => {
   });
 }
 
+const skipAnimation = () => {
+  tween.value?.progress(1);
+}
+
 const startDeciding = () => {
   choosenKey.value = undefined;
   deciding.active = true;
@@ -155,7 +154,7 @@ const finishedDeciding = () => {
         </span>
         <button v-else type="button"
           class="relative w-full inline-flex items-center justify-center rounded-md bg-primary-500 p-2 font-bold text-gray-900 hover:bg-primary-700 focus:z-10"
-          @click="decide(true)">
+          @click="skipAnimation()">
           Skip...
         </button>
       </div>

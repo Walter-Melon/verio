@@ -80,6 +80,15 @@ const itemEnterPressed = (key: number) => {
     emits('itemEnterPressed', key);
 }
 
+const itemTabPressed = (key: number) => {
+    // Only add new item on last tab press
+    if (key !== nextItemKey.value - 1) {
+        return;
+    }
+
+    addItem();
+};
+
 watch(() => props.choosenKey, (key, oldKey) => {
     if (!key) {
         return;
@@ -142,7 +151,8 @@ addItems();
                             (key == currentKey || key == choosenKey) ? 'border-primary-600' : 'border-gray-800',
                             (key == choosenKey && !item.ignore) ? 'bg-primary-600/30' : 'bg-gray-900',
                             (deciding) ? 'opacity-70' : '',
-                        ]" @remove="removeItem" @mounted="itemInputMounted" @enter-pressed="itemEnterPressed" />
+                        ]" @remove="removeItem" @mounted="itemInputMounted" @enter-pressed="itemEnterPressed"
+                        @tab-pressed="itemTabPressed" />
                 </ul>
                 <button type="button" :class="[
                     (deciding) ? 'opacity-70' : '',

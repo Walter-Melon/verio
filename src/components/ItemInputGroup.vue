@@ -20,6 +20,7 @@ const emits = defineEmits<{
   (e: 'remove', itemKey: number): void;
   (e: 'mounted', itemKey: number, textField: HTMLInputElement | null): void;
   (e: 'enterPressed', itemKey: number): void;
+  (e: 'tabPressed', itemKey: number): void;
 }>();
 
 const itemTextRef = ref<HTMLInputElement | null>(null);
@@ -44,6 +45,15 @@ const clickItemNumber = () => {
   props.item.ignore = !props.item.ignore;
 }
 
+const handleTabPressed = (event: KeyboardEvent) => {
+  // don't emit event on shift + tab press
+  if (event.shiftKey) {
+    return;
+  }
+
+  emits('tabPressed', props.itemKey);
+}
+
 const zeroPad = (num: number, places = 2) => String(num).padStart(places, '0');
 
 onMounted(() => {
@@ -66,7 +76,7 @@ onMounted(() => {
             :disabled="disabled" autofocus :class="[
               (disabled) ? 'opacity-70' : '',
               'block w-full min-w-0 flex-1 rounded-none rounded-r-md border-0 py-1.5 bg-gray-800 text-gray-100 ring-1 ring-inset ring-gray-700 focus:ring-2 focus:ring-inset focus:ring-primary-600 sm:text-sm sm:leading-6'
-            ]" @keydown.enter="$emit('enterPressed', itemKey)" />
+            ]" @keydown.enter="$emit('enterPressed', itemKey)" @keydown.tab="handleTabPressed" />
         </div>
       </div>
       <div class="mt-1 flex items-center gap-x-2 lg:mt-0">

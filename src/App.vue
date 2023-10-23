@@ -7,7 +7,7 @@ import ItemInputList from './components/ItemInputList.vue';
 const items = ref<Map<number, Item>>(new Map());
 const choosenKey = ref<number>();
 
-const cyles = 20;
+const cyles = ref(20);
 const tween = ref<GSAPTween>();
 
 const deciding = reactive<{
@@ -41,7 +41,7 @@ const currentKey = computed(() => {
 
 // Total cyles + offset for index to get correct item
 const totalTurns = computed(() => {
-  return cyles * filteredItems.value.size + (deciding.key || 0 % filteredItems.value.size);
+  return cyles.value * filteredItems.value.size + (deciding.key || 0 % filteredItems.value.size);
 });
 
 const getRandomItemKey = (): number | undefined => {
@@ -119,6 +119,8 @@ const skipAnimation = () => {
 }
 
 const startDeciding = () => {
+  // Random cycles between 10 and 25
+  cyles.value = Math.floor(Math.random() * (25 - 10 + 1) + 10);
   choosenKey.value = undefined;
   deciding.active = true;
   deciding.turn = 0;

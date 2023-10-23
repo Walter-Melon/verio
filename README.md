@@ -6,7 +6,7 @@ Verio is a simple utility for making random choices.
 
 - ~~Add/Remove Items~~
 - ~~Jump to items fields with tab/enter (skip remove button)?~~
-- On last item add another with tab
+- ~~On last item add another with tab~~
 - ~~On last item hit enter starts spinner~~
 - ~~Add count how often item got hit~~
 - ~~Add weighted mode?~~

@@ -76,7 +76,7 @@ const decide = (skipAnimation = false) => {
   }
 
   tween.value = gsap.to(deciding, {
-    duration: 10,
+    duration: 7,
     ease: 'power1.inOut',
     turn: totalTurns.value, // This animates the deciding.turn value
     onComplete: finishedDeciding
@@ -89,6 +89,9 @@ const excludeDecide = () => {
     startDeciding();
     finishedDeciding();
     choosenKey.value = [...filteredItems.value.keys()][0];
+
+    // Reset all ignored
+    items.value.forEach((item) => item.ignore = false);
     return;
   }
 

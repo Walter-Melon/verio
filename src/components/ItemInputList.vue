@@ -20,6 +20,7 @@ const emits = defineEmits<{
 const nextItemKey = ref(1);
 const startCount = ref(3);
 const focusKey = ref<number>(0);
+const inputGroups = ref<InstanceType<typeof ItemInputGroup>[]>([]);
 
 const addItem = ({ text, setFocus = false }: { text?: string, setFocus?: boolean } = {}): number => {
     const itemKey = nextItemKey.value;
@@ -86,6 +87,19 @@ watch(() => props.choosenKey, (key, oldKey) => {
 
     const item = getItem(key);
     item.count++;
+
+    if (inputGroups.value.length <= 0) {
+        return;
+    }
+
+    inputGroups.value.forEach((itemGroup) => {
+        if (itemGroup.$props.itemKey != key) {
+            return;
+        }
+
+        const el: HTMLElement = itemGroup.$el;
+        el.scrollIntoView({ behavior: 'smooth' });
+    });
 });
 
 addItems();
@@ -123,8 +137,8 @@ addItems();
         <main>
             <div class="flex flex-col gap-2 ">
                 <ul class="flex flex-col gap-1">
-                    <ItemInputGroup v-for="[key, item] in items" :key="key" :item-key="key" :disabled="deciding"
-                        :total-items="items.size" :total-weight="totalWeight" :item="item" :class="[
+                    <ItemInputGroup ref="inputGroups" v-for="[key, item] in items" :key="key" :item-key="key"
+                        :disabled="deciding" :total-items="items.size" :total-weight="totalWeight" :item="item" :class="[
                             (key == currentKey || key == choosenKey) ? 'border-primary-600' : 'border-gray-800',
                             (key == choosenKey && !item.ignore) ? 'bg-primary-600/30' : 'bg-gray-900',
                             (deciding) ? 'opacity-70' : '',

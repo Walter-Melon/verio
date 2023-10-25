@@ -1,0 +1,10 @@
+---
+version: '3.8'
+
+services:
+  decidr:
+    image: ghcr.io/walter-melon/verio:latest
+    container_name: decidr
+    ports:
+      - 8310:80
+    restart: unless-stopped
